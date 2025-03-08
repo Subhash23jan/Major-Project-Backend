@@ -31,6 +31,7 @@ MP-Backend is a Node.js-based backend application that provides authentication a
     JWT_SECRET=your_jwt_secret
     MONGODB_URI=your_mongodb_uri
     ```
+    **Note:** Ensure that the `.env` file is not committed to the repository by adding it to the `.gitignore` file.
 
 4. Start the application:
     ```sh
@@ -64,4 +65,3 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 This project is licensed under the MIT License.
-````
