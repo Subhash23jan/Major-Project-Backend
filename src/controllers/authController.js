@@ -31,6 +31,7 @@ const verifyUser = async (req, res, next) => {
     next();
 };
 
+
 module.exports = {
     verifyToken,
     verifyUser

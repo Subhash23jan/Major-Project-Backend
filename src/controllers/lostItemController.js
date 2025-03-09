@@ -1,11 +1,12 @@
 const { FoundItem, LostItem } = require('../models/utils');
+const { uploadImage } = require('./apiController');
 const { matchedItems, generateDescriptionFromImage } = require('./utils');
 
 // Function to get a lost item by ID
 const getLostItem = async (req, res) => {
-    const { id } = req.params;
+    const { itemId } = req.params;
     try {
-        const lostItem = await LostItem.findById(id);
+        const lostItem = await LostItem.findById(itemId);
         if (!lostItem) {
             return res.status(404).json({ message: 'Lost item not found' });
         }
@@ -20,7 +21,9 @@ const getLostItem = async (req, res) => {
 
 // Function to create a new lost item
 const createLostItem = async (req, res) => {
-    const lostItem = new LostItem(req.body);
+
+    const image = await uploadImage();
+   const lostItem = new LostItem({ ...req.body, image: image,uploadedBy:req.user._id});
     try {
         const newLostItem = await lostItem.save();
         res.status(201).json(newLostItem);
@@ -47,9 +50,25 @@ const generateDescription = async (req, res) => {
     return res.json(description);
 };
 
+// Update status of a specific lost item by ID
+const updateLostItemStatus = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        const updatedItem = await LostItem.findByIdAndUpdate(id, { status }, { new: true });
+        if (!updatedItem) {
+            return res.status(404).json({ message: 'Lost item not found' });
+        }
+        res.status(200).json(updatedItem);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+};
+
 module.exports = {
     getLostItem,
     createLostItem,
     getMatchedItems,
-    generateDescription
+    generateDescription,
+    updateLostItemStatus
 };

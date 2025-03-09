@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
+const LostItem = require('../models/lostItemModel');
+const Roles = require('../models/roles');
 
 // Middleware to verify user
 const verifyUser = asyncHandler(async (req, res, next) => {
@@ -22,4 +24,18 @@ const verifyUser = asyncHandler(async (req, res, next) => {
     }
 });
 
-module.exports = { verifyUser };
+// Middleware to check if user is authorized based on roles
+const isAuthorised = (roles) => {
+    return asyncHandler(async (req, res, next) => {
+        if (roles.includes(Roles.Anonymous)) return next();
+        if (roles.includes(Roles.Admin) && req.user.role === Roles.Admin) return next();
+        if (roles.includes(Roles.User) && req.user) return next();
+        if (roles.includes(Roles.Owner)) {
+            const lostItem = await LostItem.findById(req.params.itemId);
+            if (lostItem.uploadedBy.toString() === req.user._id.toString()) return next();
+        }
+        res.status(403).json({ message: 'You are not authorized to access this resource' });
+    });
+};
+
+module.exports = { verifyUser, isAuthorised };

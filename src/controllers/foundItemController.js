@@ -1,6 +1,5 @@
 const { FoundItem } = require('../models/utils');
 const { generateDescriptionFromImage } = require('./utils');
-const { getFoundItem, uploadFoundItem } = require('../utils/foundItemUtils');
 
 // Function to get a found item by ID
 const getFoundItem = async (req, res) => {

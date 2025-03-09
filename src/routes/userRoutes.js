@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { getUserProfile, registerUser, loginUser } = require('../controllers/userController');
-const { verifyUser } = require('../middleware/authMiddleware');
+const { verifyUser, isAuthorised } = require('../middleware/authMiddleware');
+const Roles = require('../models/roles');
 
 // Route to get user profile
-router.get('/profile', verifyUser, getUserProfile);
+router.get('/profile', isAuthorised([Roles.User]), getUserProfile);
 
 // Route to register a new user
 router.post('/register', registerUser);

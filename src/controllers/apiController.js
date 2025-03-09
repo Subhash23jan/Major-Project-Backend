@@ -36,7 +36,20 @@ const generateDescriptionFromImage = async (image) => {
     }
 };
 
+const uploadImage = async (image) => {
+    return "https://www.boat-lifestyle.com/cdn/shop/files/ACCG6DS7WDJHGWSH_0.png";
+    try {
+        const response = await axios.post('https://external-api.com/upload-image', {
+            image: image
+        });
+        return response.data.imageUrl;
+    } catch (err) {
+        throw new Error('Failed to upload image');
+    }
+};
+
 module.exports = {
     matchedItems,
-    generateDescriptionFromImage
+    generateDescriptionFromImage,
+    uploadImage
 };

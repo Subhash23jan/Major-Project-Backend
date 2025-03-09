@@ -1,9 +1,12 @@
 const express = require('express');
+const { getFoundItem, uploadFoundItem } = require('../controllers/foundItemController');
+const { isAuthorised } = require('../middleware/authMiddleware');
+const Roles = require('../models/roles');
 const router = express.Router();
-const { getFoundItem, uploadFoundItem } = require('../utils/foundItemController');
 
-// Route to get all found items
-router.get('/:id',verifyUser, getFoundItem);
+
+// Route to get found uploaded items
+router.get('/:id',isAuthorised([Roles.User]), getFoundItem);
 
 // Route to create a new found item
 router.post('/upload-item', uploadFoundItem);
